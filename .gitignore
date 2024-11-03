@@ -1,0 +1,14 @@
+# Ignore compiled files
+*.o
+*.exe
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore environment variables file
+.env
+*.txt
+*.png
+*.pyc
+*.json

@@ -1,0 +1,80 @@
+# box properties 
+ 
+space_dimension = 1
+
+space_confinement= pbox
+
+
+ 
+# other options are like: abox, pcylinder, acylinder, asphere which is for the purpose of the aperiodic wall etc...
+
+box_extension = 20, 10, 10
+
+box_points = 100, 100, 100
+
+
+
+# particles properties 
+
+particle_types = "cgrained"
+
+species =  a, b, c 
+
+species_fraction = .4, .6, .8 
+
+
+
+
+# between the same pairs the maximum possible interaction is limited to only three kinds of potential... so please first reduce your problem to a configuration where maximum three kinds of potentials are defined for a single kind of pair...
+
+# you can put the potential in any hierarchy, however for the easy perception it has been divided and putted in the three sections given as ...
+
+
+
+# primary interactions
+
+interaction: aa = lj,  sigma = 1.2, cutoff = 3.2, epsilon=2.0
+
+interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
+
+interaction: ac = hc,  sigma = 1.2, cutoff = 1.2,  epsilon=2.0 
+
+interaction: bb = wca, sigma = 1.2, cutoff = 4.0, epsilon=0.5
+
+interaction: bc = wca, sigma = 1.2, cutoff = 4.0, epsilon=1.0
+
+interaction: cc = hc,  sigma = 1.2, cutoff = 1.2,  epsilon=2.0 
+
+
+
+
+#secondary interactions
+
+interaction: aa = hc,  sigma = 1.2, cutoff = 3.2, epsilon=2.0
+
+interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
+
+
+
+
+#tertiary interactions
+ 
+interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
+
+
+
+
+# thermodynamic properties
+
+
+temperature = 300 
+
+# in kelvin
+
+rho = 1.0
+
+# in the reduced unit
+
+iteration_max = 1000
+
+# maximum number of iteration 
