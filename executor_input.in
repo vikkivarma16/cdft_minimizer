@@ -2,7 +2,17 @@
  
 space_dimension = 1
 
-space_confinement= pbox
+space_confinement = abox
+
+
+# in case of aperiodic boundary condition with the particles confined within the wall
+
+aperiodicity_blocker: wall
+# here you can also define "na", "NA" or "none"
+
+wall: particles = b
+wall: position  = (0, 0, 0), (0, 0, 1) 
+wall: orientation  = (1, 0, 0), (1, 0, 0)
 
 
  
@@ -18,9 +28,10 @@ box_points = 100, 100, 100
 
 particle_types = "cgrained"
 
-species =  a, b, c 
+species =  a
 
-species_fraction = .4, .6, .8 
+species_fraction = 1.0
+
 
 
 
@@ -33,33 +44,16 @@ species_fraction = .4, .6, .8
 
 # primary interactions
 
-interaction: aa = lj,  sigma = 1.2, cutoff = 3.2, epsilon=2.0
+interaction: aa = custom_1,  sigma = 1.2, cutoff = 1.2, epsilon=2000000000.
 
-interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
+wall_interaction: ab = wca_wall,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
 
-interaction: ac = hc,  sigma = 1.2, cutoff = 1.2,  epsilon=2.0 
-
-interaction: bb = wca, sigma = 1.2, cutoff = 4.0, epsilon=0.5
-
-interaction: bc = wca, sigma = 1.2, cutoff = 4.0, epsilon=1.0
-
-interaction: cc = hc,  sigma = 1.2, cutoff = 1.2,  epsilon=2.0 
-
-
+# b is the wall particle 
 
 
 #secondary interactions
 
-interaction: aa = hc,  sigma = 1.2, cutoff = 3.2, epsilon=2.0
-
-interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
-
-
-
-
-#tertiary interactions
- 
-interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
+interaction: aa = wca,  sigma = 1.2, cutoff = 3.2, epsilon=2.0
 
 
 
