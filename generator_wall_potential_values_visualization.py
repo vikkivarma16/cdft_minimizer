@@ -4,7 +4,7 @@
 # in K space its a repetitive values from all the particles so its values are for the set of frequencies from zero to maximum relevant values... 
 
 
-def pair_potential_box_walls_values():
+def wall_potential_values_visualization():
 
 
 
@@ -129,7 +129,7 @@ def pair_potential_box_walls_values():
     
     def read_species_data(filename):
         try:
-            with open('input_data_particles_interactions.json', 'r') as file:
+            with open(filename, 'r') as file:
                 data = json.load(file)
             return data
         except FileNotFoundError:
@@ -150,7 +150,7 @@ def pair_potential_box_walls_values():
     def read_particle_data_from_json_primary(json_file, interaction_types, closest_distances, interaction_strength, cutoff_ranges):
         with open(json_file, 'r') as file:
             data = json.load(file)
-        data = data["input_data_space_confinement"]
+        data = data["space_confinement_parameters"]
         data = data["walls_properties"]
         data = data["walls_interactions"]
         
@@ -173,7 +173,7 @@ def pair_potential_box_walls_values():
     def read_particle_data_from_json_secondary(json_file, interaction_types, closest_distances, interaction_strength, cutoff_ranges):
         with open(json_file, 'r') as file:
             data = json.load(file)
-        data = data["input_data_space_confinement"]
+        data = data["space_confinement_parameters"]
         data = data["walls_properties"]
         data = data["walls_interactions"]
         
@@ -195,7 +195,7 @@ def pair_potential_box_walls_values():
         with open(json_file, 'r') as file:
             data = json.load(file)
         
-        data = data["input_data_space_confinement"]
+        data = data["space_confinement_parameters"]
         data = data["walls_properties"]
         data = data["walls_interactions"]
         
@@ -577,29 +577,29 @@ def pair_potential_box_walls_values():
             plt.tight_layout()
 
             # Save the plot as a PNG file with high resolution
-            plt.savefig('walls_particles_interaction_potential.png', dpi=300)  # Increase dpi for high resolution
+            plt.savefig('vis_walls_particles_interaction_potential.png', dpi=300)  # Increase dpi for high resolution
 
         
         
         
         
         
-    json_file_path = 'input_data_space_confinement.json'  # Make sure this file exists and follows the correct format
+    json_file_path = 'input_data_space_confinement_parameters.json'  # Make sure this file exists and follows the correct format
     calculate_interactions_visual(json_file_path)
         
         
-    filename = 'r_space.txt'
+    filename = 'supplied_data_r_space.txt'
     positions = read_position_data(filename)
     positions = np.array(positions)
     
     filename = "input_walls_particles_data.txt"
     walls_positions, walls_particles = read_walls_particles_data(filename)
         
-    filename = "input_data_particles_interactions.json"
+    filename = "input_data_particles_interactions_parameters.json"
     prop = read_species_data(filename)
     # Loop through all species and print their rho_frac values
     
-    prop = prop["input_data_particles_interactions"]
+    prop = prop["particles_interactions_parameters"]
     
     species_data={}
     for key, attributes in prop["species"].items():
@@ -612,7 +612,7 @@ def pair_potential_box_walls_values():
             data = json.load(file)
     file.close()
     
-    data =  data["input_data_space_confinement"]
+    data =  data["space_confinement_parameters"]
     
     walls_properties = data["walls_properties"]
     
@@ -634,9 +634,10 @@ def pair_potential_box_walls_values():
         
         ref_point = np.array(position)
         r_space = np.linalg.norm(positions - ref_point, axis=1)
-      
-        for particle in walls_particles[i]:
-            for specimen in species_data:
+        v_ext_species = {}
+        for specimen in species_data:
+            v_ext_cast = np.zeros_like(xs)
+            for particle in walls_particles[i]:
                 name1=particle+specimen
                 name2=specimen+particle
                 name1=name1.strip()
@@ -657,6 +658,7 @@ def pair_potential_box_walls_values():
                     V_r = calculate_interaction_potential(r_space, interaction_model, epsilon, sigma)
                     total_potential.append(V_r)
                     v_Ext = v_Ext + V_r
+                    v_ext_cast = v_ext_cast + V_r
                     
                     
                 if name1 in walls_interactions["secondary"]:
@@ -671,8 +673,9 @@ def pair_potential_box_walls_values():
                     epsilon = float (value["epsilon"])
                     interaction_model = value["type"]
                     V_r = calculate_interaction_potential(r_space, interaction_model, epsilon, sigma)
-                    
                     v_Ext = v_Ext + V_r
+                    v_ext_cast = v_ext_cast + V_r
+                    
                     
                 if name1 in walls_interactions["tertiary"]:
                     name = name1
@@ -686,19 +689,20 @@ def pair_potential_box_walls_values():
                     epsilon = float (value["epsilon"])
                     interaction_model = value["type"]
                     V_r = calculate_interaction_potential(r_space, interaction_model, epsilon, sigma)
-                    
                     v_Ext = v_Ext + V_r
+                    v_ext_cast = v_ext_cast + V_r
+            v_ext_species["specimen"] = v_ext_cast
     
     total_potential.append(v_Ext)
 
     total_potential = np.array(total_potential)
     
-    with open('walls_potential_r_space.txt', 'w') as f:
+    with open('supplied_data_walls_potential_r_space.txt', 'w') as f:
         for pos, v in zip(positions, v_Ext):
             pos_str = ' '.join(map(str, pos))
             f.write(f"{pos_str} {v}\n")
 
-    print("\n\n\n... external potential due to wall particles have been exported successfully ...\n\n\n")
+    print("\n\n... external potential due to wall particles have been exported successfully ...\n\n\n")
 
     # Plotting position vs. potential (using a single dimension for positions)
     # For simplicity, use the magnitude of positions
@@ -710,7 +714,7 @@ def pair_potential_box_walls_values():
     plt.ylabel('Potential (v_Ext)')
     plt.title('Position vs Potential')
     plt.grid(True)
-    plt.savefig('walls_position_vs_potential.png')
+    plt.savefig('vis_walls_position_vs_potential.png')
     
     
     
@@ -736,7 +740,7 @@ def pair_potential_box_walls_values():
     plt.legend()
 
     # Save the plot in high resolution
-    plt.savefig('walls_position_vs_potential_individual.png')
+    plt.savefig('vis_walls_position_vs_potential_individual.png')
         
     
         
@@ -755,10 +759,10 @@ def pair_potential_box_walls_values():
     plt.title('3D Scatter Plot of Potential vs Positions')
 
     # Save the plot
-    plt.savefig('walls_potential_3d.png')
+    plt.savefig('vis_walls_potential_3d.png')
     # Call the function to execute, using the input_potential_generator.json file
     
 
     return 0
     
-pair_potential_box_walls_values()
+#wall_potential_values_visualization()

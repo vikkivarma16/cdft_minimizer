@@ -20,6 +20,34 @@ def pair_potential_custom_1(r, v_r, epsilon, sigma):
     v_r[(r >= r_cutoff) & (r < r_upper_bound)] = 4 * epsilon * ((sigma / r[(r >= r_cutoff) & (r < r_upper_bound)])**12 - 2 * (sigma / r[(r >= r_cutoff) & (r < r_upper_bound)])**6)  # Region 2: 2^(1/6) * sigma < r < 5*sigma
     v_r[r >= r_upper_bound] = 0  # Region 3: r > 5 * sigma
     return 0
+    
+    
+    
+def pair_potential_integrant_custom_1(r, v_r, epsilon, sigma):
+
+    EPSILON = 0.0001
+    
+    import numpy as np
+    
+    r_cutoff = 2**(1/6) * sigma
+    r_upper_bound = 5 * sigma
+
+    # Initialize the potential array
+
+    # Calculate the WCA potential based on the distance
+    
+    if (r<r_cutoff):
+        v_r = -epsilon
+    elif r >= r_cutoff and r < r_upper_bound:
+        v_r = 4 * epsilon * ((sigma / r)**12 - 2 * (sigma / r)**6)
+    elif r >= r_upper_bound:
+        v_r = 0
+    
+    return 0
+    
+    
+    
+    
 def pair_potential_custom_2(r, v_r, epsilon, sigma):
 
     EPSILON = 0.0001
@@ -46,3 +74,26 @@ for i in range(1, 4):  # Adjust the range based on the number of functions
     result = func()  # Call the function
     print(f"Result from {func_name}: {result}")
 '''
+
+def pair_potential_integrant_custom_2(r, v_r, epsilon, sigma):
+
+    EPSILON = 0.0001
+    
+    import numpy as np
+    
+    r_cutoff = 2**(1/6) * sigma
+    r_upper_bound = 5 * sigma
+
+    # Initialize the potential array
+
+    # Calculate the WCA potential based on the distance
+    
+    print("... here the problem persist ...\n\n")
+    if (r<r_cutoff):
+        v_r = -epsilon
+    elif r >= r_cutoff and r < r_upper_bound:
+        v_r = 4 * epsilon * ((sigma / r)**12 - 2 * (sigma / r)**6)
+    elif r >= r_upper_bound:
+        v_r = 0
+    
+    return 0

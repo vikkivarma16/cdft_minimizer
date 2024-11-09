@@ -55,9 +55,9 @@ def data_exporter_simulation_thermodynamic_parameters(input_file):
         exit(0)
     else:
         with open('input_data_simulation_thermodynamic_parameters.json', 'w') as f:
-            json.dump({"thermodynamic_properties": thermodynamic_properties}, f, indent=4)
+            json.dump({"simulation_thermodynamic_parameters": thermodynamic_properties}, f, indent=4)
             
-        print("\n\n\n... thermodynamic parameters have been exported successfully ...\n\n\n")
+        print("\n\n\n... thermodynamic parameters have been exported ...\n\n\n")
     
     return 0
 # Specify the input file path

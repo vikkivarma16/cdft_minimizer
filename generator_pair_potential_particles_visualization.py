@@ -94,14 +94,11 @@ def pair_potential_particles_visualization():
     def read_particle_data_from_json_primary(json_file, interaction_types, closest_distances, interaction_strength, cutoff_ranges):
         with open(json_file, 'r') as file:
             data = json.load(file)
-        data = data["input_data_particles_interactions"]
+        data = data["particles_interactions_parameters"]
         
         interaction_types["primary"] = {}
-
         closest_distances["primary"] = {}
-        
         interaction_strength["primary"] = {}
-        
         cutoff_ranges["primary"] = {}
 
         # Loop through the interactions and parse the data
@@ -117,14 +114,11 @@ def pair_potential_particles_visualization():
     def read_particle_data_from_json_secondary(json_file, interaction_types, closest_distances, interaction_strength, cutoff_ranges):
         with open(json_file, 'r') as file:
             data = json.load(file)
-        data = data["input_data_particles_interactions"]
+        data = data["particles_interactions_parameters"]
         
         interaction_types["secondary"] = {}
-
         closest_distances["secondary"] = {}
-        
         interaction_strength["secondary"] = {}
-        
         cutoff_ranges["secondary"] = {}
 
         # Loop through the interactions and parse the data
@@ -139,7 +133,7 @@ def pair_potential_particles_visualization():
     def read_particle_data_from_json_tertiary(json_file, interaction_types, closest_distances, interaction_strength, cutoff_ranges):
         with open(json_file, 'r') as file:
             data = json.load(file)
-        data = data["input_data_particles_interactions"]
+        data = data["particles_interactions_parameters"]
         interaction_types["tertiary"] = {}
         closest_distances["tertiary"] = {}
         interaction_strength["tertiary"] = {}
@@ -535,14 +529,14 @@ def pair_potential_particles_visualization():
         plt.tight_layout()
 
         # Save the plot as a PNG file with high resolution
-        plt.savefig('interaction_potentials.png', dpi=300)  # Increase dpi for high resolution
+        plt.savefig('vis_interaction_potentials.png', dpi=300)  # Increase dpi for high resolution
 
         
         
         
         
 
-        print("\n\n\n............ all the potentials have been implemented successfully in the proper way, which could be observed in the exported png file ............\n\n\n")
+        print("\n\n\n... all the potentials have been implemented successfully in the proper way, which could be observed in the exported png file ...\n\n\n")
 
         
         
@@ -554,7 +548,7 @@ def pair_potential_particles_visualization():
         #plt.show()
         
     # Call the function to execute, using the input_potential_generator.json file
-    json_file_path = 'input_data_particles_interactions.json'  # Make sure this file exists and follows the correct format
+    json_file_path = 'input_data_particles_interactions_parameters.json'  # Make sure this file exists and follows the correct format
     calculate_interactions(json_file_path)
 
     return 0

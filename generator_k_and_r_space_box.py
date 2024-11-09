@@ -77,14 +77,16 @@ def r_k_space():
     
     
     
-    params_box = read_input('input_box_properties.json')
+    params_box = read_input('input_data_space_confinement_parameters.json')
     
     # Extract box properties
+    params_box = params_box["space_confinement_parameters"]
+    
     box_length = params_box['box_properties']['box_length']
     num_points = params_box['box_properties']['box_points']
 
     # Read space properties from 'input_space_properties.json'
-    params_space = read_input('input_space_properties.json')
+    params_space = params_box
     
     # Extract space properties
     dimension = int(params_space['space_properties']['dimension'])
@@ -95,9 +97,9 @@ def r_k_space():
         kx, ky, kz = generate_k_space_1d(box_length[0], num_points[0])
 
         # Save results to text files
-        np.savetxt('r_space.txt', np.column_stack((x, y, z)))
-        np.savetxt('k_space.txt', np.column_stack((kx, ky, kz)))
-        print("\n\n\n................. the corresponding 1D real space and k space data has been generated ..................\n\n\n")
+        np.savetxt('supplied_data_r_space.txt', np.column_stack((x, y, z)))
+        np.savetxt('supplied_data_k_space.txt', np.column_stack((kx, ky, kz)))
+        print("\n\n\n... the corresponding 1D real space and k space data has been generated ...\n\n\n")
 
     elif dimension == 2:
         # Generate real space and k-space for 2D
@@ -105,9 +107,9 @@ def r_k_space():
         kx, ky, kz = generate_k_space_2d(box_length[0], box_length[1], num_points[0], num_points[1])
 
         # Save results to text files
-        np.savetxt('r_space.txt', np.column_stack((x.flatten(), y.flatten(), z.flatten())))
-        np.savetxt('k_space.txt', np.column_stack((kx.flatten(), ky.flatten(), kz.flatten())))
-        print("\n\n\n................. the corresponding 2D real space and k space data has been generated ..................\n\n\n")
+        np.savetxt('supplied_data_r_space.txt', np.column_stack((x.flatten(), y.flatten(), z.flatten())))
+        np.savetxt('supplied_data_k_space.txt', np.column_stack((kx.flatten(), ky.flatten(), kz.flatten())))
+        print("\n\n\n... the corresponding 2D real space and k space data has been generated ...\n\n\n")
 
     elif dimension == 3:
         # Generate real space and k-space for 3D
@@ -115,9 +117,9 @@ def r_k_space():
         kx, ky, kz = generate_k_space_3d(box_length[0], box_length[1], box_length[2], num_points[0], num_points[1], num_points[2])
 
         # Save results to text files
-        np.savetxt('r_space.txt', np.column_stack((x.flatten(), y.flatten(), z.flatten())))
-        np.savetxt('k_space.txt', np.column_stack((kx.flatten(), ky.flatten(), kz.flatten())))
-        print("\n\n\n................. the corresponding 3D real space and k space data has been generated ..................\n\n\n")
+        np.savetxt('supplied_data_r_space.txt', np.column_stack((x.flatten(), y.flatten(), z.flatten())))
+        np.savetxt('supplied_data_k_space.txt', np.column_stack((kx.flatten(), ky.flatten(), kz.flatten())))
+        print("\n\n\n... the corresponding 3D real space and k space data has been generated ...\n\n\n")
 
     else:
         print("Currently, only 1D, 2D, and 3D spaces are supported.")

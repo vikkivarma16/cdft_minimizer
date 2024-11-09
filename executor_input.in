@@ -5,15 +5,6 @@ space_dimension = 1
 space_confinement = abox
 
 
-# in case of aperiodic boundary condition with the particles confined within the wall
-
-aperiodicity_blocker: wall
-# here you can also define "na", "NA" or "none"
-
-wall: particles = b
-wall: position  = (0, 0, 0), (0, 0, 1) 
-wall: orientation  = (1, 0, 0), (1, 0, 0)
-
 
  
 # other options are like: abox, pcylinder, acylinder, asphere which is for the purpose of the aperiodic wall etc...
@@ -21,6 +12,18 @@ wall: orientation  = (1, 0, 0), (1, 0, 0)
 box_extension = 20, 10, 10
 
 box_points = 100, 100, 100
+
+
+
+
+# in case of aperiodic boundary condition with the particles confined within the wall
+
+aperiodicity_blocker: wall
+# here you can also define "na", "NA" or "none"
+
+wall: particles = b
+wall: position  = (0, 0, 0), (20, 0, 0) 
+wall: orientation  = (1, 0, 0), (1, 0, 0)
 
 
 
@@ -44,16 +47,16 @@ species_fraction = 1.0
 
 # primary interactions
 
-interaction: aa = custom_1,  sigma = 1.2, cutoff = 1.2, epsilon=2000000000.
+interaction: aa = hc,  sigma = 1.2, cutoff = 3.2, epsilon=2
 
-wall_interaction: ab = wca_wall,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
+wall_interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
 
 # b is the wall particle 
 
 
 #secondary interactions
 
-interaction: aa = wca,  sigma = 1.2, cutoff = 3.2, epsilon=2.0
+interaction: aa = wca,  sigma = 1.2, cutoff = 3.2, epsilon=3.0
 
 
 
@@ -65,7 +68,7 @@ temperature = 300
 
 # in kelvin
 
-rho = 1.0
+rho = 0.5
 
 # in the reduced unit
 

@@ -14,17 +14,17 @@ def read_particle_data_from_json(json_file):
     closest_distances = {}
     
     # Parse interaction data from JSON
-    for pair_type, values in data["interactions"]["primary"].items():
+    for pair_type, values in data["particles_interactions_parameters"]["interactions"]["primary"].items():
         if values["type"] == "hc":
             interaction_types[pair_type] = values["type"]
             closest_distances[pair_type] = values["sigma"]
             
-    for pair_type, values in data["interactions"]["secondary"].items():
+    for pair_type, values in data["particles_interactions_parameters"]["interactions"]["secondary"].items():
         if values["type"] == "hc":
             interaction_types[pair_type] = values["type"]
             closest_distances[pair_type] = values["sigma"]
             
-    for pair_type, values in data["interactions"]["tertiary"].items():
+    for pair_type, values in data["particles_interactions_parameters"]["interactions"]["tertiary"].items():
         if values["type"] == "hc":
             interaction_types[pair_type] = values["type"]
             closest_distances[pair_type] = values["sigma"]
@@ -103,16 +103,17 @@ def calculate_weight_function_k_space(particle_sizes, k_space, dimension):
 # Function to export weight functions to files
 def export_weight_functions_to_files(weight_functions):
     for particle_type, weight_function in weight_functions.items():
-        file_name = f"weight_FMT_k_space_{particle_type}.txt"
+        file_name = f"supplied_data_weight_FMT_k_space_{particle_type}.txt"
         np.savetxt(file_name, weight_function)
+        
         
         
 
 # Main function to execute the calculations
 def fmt_weights_1d():
     # File paths
-    json_file_path = 'input_interactions_properties.json'
-    k_space_file_path = 'k_space.txt'
+    json_file_path = 'input_data_particles_interactions_parameters.json'
+    k_space_file_path = 'supplied_data_k_space.txt'
     
     # Read interaction data
     interaction_types, closest_distances = read_particle_data_from_json(json_file_path)
@@ -131,6 +132,7 @@ def fmt_weights_1d():
     # Export weight functions to files
     export_weight_functions_to_files(weight_functions)
 
+    print("\n\n... k space FMT weights have been calculated successfully and exported to the appropriate file ... \n\n\n")
 # Run the main function
 
-# fmt_weights_1d()
+fmt_weights_1d()

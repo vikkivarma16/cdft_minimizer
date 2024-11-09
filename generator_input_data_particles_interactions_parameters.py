@@ -11,7 +11,7 @@
 
 
 
-def data_exporter_particles_interactions(input_file):
+def data_exporter_particles_interactions_parameters(input_file):
 
     import json
     # Initialize dictionaries to hold the data
@@ -265,15 +265,15 @@ def data_exporter_particles_interactions(input_file):
     input_data_particles_interactions["species"] = species_data
     input_data_particles_interactions["interactions"] = interactions_data
 
-    with open('input_data_particles_interactions.json', 'w') as f:
-        json.dump({"input_data_particles_interactions":input_data_particles_interactions}, f, indent=4)
+    with open('input_data_particles_interactions_parameters.json', 'w') as f:
+        json.dump({"particles_interactions_parameters":input_data_particles_interactions}, f, indent=4)
         
     print("\n\n\n... particles properties have been exported ...\n\n\n")
     
     return 0
 # Specify the input file path
 #input_file_path = 'executor_input.in'  # Replace with your actual input file name
-#dummy = data_exporter_particles_interactions(input_file_path)
+#dummy = data_exporter_particles_interactions_parameters(input_file_path)
 
 
 

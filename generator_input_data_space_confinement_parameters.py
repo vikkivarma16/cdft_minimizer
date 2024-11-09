@@ -9,7 +9,7 @@
 
 
 
-def data_exporter_space_confinement(input_file):
+def data_exporter_space_confinement_parameters(input_file):
 
     import json
 
@@ -30,13 +30,13 @@ def data_exporter_space_confinement(input_file):
             
     # species data is being fed in case if there is an interaction between particles and the aperiodic boundary conditions ...
     try:
-        with open('input_data_particles_interactions.json', 'r') as file:
+        with open('input_data_particles_interactions_parameters.json', 'r') as file:
             data = json.load(file)
     except FileNotFoundError:
         print("... Error: The file 'input_data_particles_interactions.json' was not found please first run the code: 'generator_input_data_particles_interactions.py' ...")
         exit(0)
     
-    prop = data["input_data_particles_interactions"]
+    prop = data["particles_interactions_parameters"]
     # Loop through all species and print their rho_frac values
     species_data={}
     for key, attributes in prop["species"].items():
@@ -344,11 +344,11 @@ def data_exporter_space_confinement(input_file):
     
     if space_properties["confinement"]=="pbox":
         input_data_space_confinement["box_properties"] = box_properties
-        with open('input_data_space_confinement.json', 'w') as f:
-            json.dump({"input_data_space_confinement": input_data_space_confinement}, f , indent=4)
+        with open('input_data_space_confinement_parameters.json', 'w') as f:
+            json.dump({"space_confinement_parameters": input_data_space_confinement}, f , indent=4)
         f.close()     
         
-        print("\n\n\n... space and confinement properties has been exported successfully ... \n\n\n")
+        print("\n\n... space and confinement properties has been exported ... \n\n\n")
            
             
             
@@ -358,18 +358,18 @@ def data_exporter_space_confinement(input_file):
             walls_properties["walls_interactions"] = walls_interactions_data 
             input_data_space_confinement["box_properties"] = box_properties
             input_data_space_confinement["walls_properties"] =  walls_properties
-            with open('input_data_space_confinement.json', 'w') as f:
-                json.dump({"input_data_space_confinement": input_data_space_confinement}, f , indent=4)
+            with open('input_data_space_confinement_parameters.json', 'w') as f:
+                json.dump({"space_confinement_parameters": input_data_space_confinement}, f , indent=4)
             f.close()
-            print("\n\n\n... space and confinement properties has been exported successfully ... \n\n\n")
+            print("\n\n... space and confinement properties has been exported ... \n\n\n")
             print("\n\n... periodicity has been removed with the introduction of walls ... the second simplest aperiodicity is being used in the system, the first is aperiodicity without any wall or confinement ... \n\n")
         elif (boundary_type["aperiodicity_blocker"] == "NA"  or boundary_type["aperiodicity_blocker"] == "na"):
             
             input_data_space_confinement["box_properties"] = box_properties
-            with open('input_data_space_confinement.json', 'w') as f:
-                json.dump({"input_data_space_confinement": input_data_space_confinement}, f , indent=4)
+            with open('input_data_space_confinement_parameters.json', 'w') as f:
+                json.dump({"space_confinement_parameters": input_data_space_confinement}, f , indent=4)
             f.close()
-            print("\n\n\n... space and confinement properties has been exported successfully ... \n\n\n")
+            print("\n\n... space and confinement properties has been exported ... \n\n\n")
             print("\n\n... periodicity has been removed without introducing any walls ... the simplest aperiodicity is being used in the system ... \n\n")
         else:
             print("\n\nerror: an unknown kind of aperiodicity has been introduced...\n\n")
