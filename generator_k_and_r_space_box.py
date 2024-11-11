@@ -42,7 +42,8 @@ def r_k_space():
     def generate_k_space_1d(length_x, num_points_x):
         """Generates k-space for 1D Cartesian grid using fftfreq."""
         dkx = length_x / (int(num_points_x) - 1)
-        kx = np.fft.fftfreq(int(num_points_x), d=dkx) * 2 * np.pi
+        kx = np.fft.fftfreq(int(num_points_x), d=dkx)
+        
         return kx, np.zeros_like(kx), np.zeros_like(kx)  # ky and kz are zeros
 
     def generate_k_space_2d(length_x, length_y, num_points_x, num_points_y):
@@ -97,6 +98,8 @@ def r_k_space():
         kx, ky, kz = generate_k_space_1d(box_length[0], num_points[0])
 
         # Save results to text files
+        
+        
         np.savetxt('supplied_data_r_space.txt', np.column_stack((x, y, z)))
         np.savetxt('supplied_data_k_space.txt', np.column_stack((kx, ky, kz)))
         print("\n\n\n... the corresponding 1D real space and k space data has been generated ...\n\n\n")

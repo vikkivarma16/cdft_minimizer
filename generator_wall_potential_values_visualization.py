@@ -630,13 +630,15 @@ def wall_potential_values_visualization():
     v_Ext = np.zeros_like(xs)
     total_potential=[]
    
-    for i, position in enumerate(walls_positions):
+    for specimen in species_data:
         
-        ref_point = np.array(position)
-        r_space = np.linalg.norm(positions - ref_point, axis=1)
         v_ext_species = {}
-        for specimen in species_data:
-            v_ext_cast = np.zeros_like(xs)
+        v_ext_cast = np.zeros_like(xs)
+        
+        for i, position in enumerate(walls_positions):
+        
+            ref_point = np.array(position)
+            r_space = np.linalg.norm(positions - ref_point, axis=1)    
             for particle in walls_particles[i]:
                 name1=particle+specimen
                 name2=specimen+particle
@@ -691,16 +693,19 @@ def wall_potential_values_visualization():
                     V_r = calculate_interaction_potential(r_space, interaction_model, epsilon, sigma)
                     v_Ext = v_Ext + V_r
                     v_ext_cast = v_ext_cast + V_r
-            v_ext_species["specimen"] = v_ext_cast
+        v_ext_species[specimen] = np.array(v_ext_cast)
     
     total_potential.append(v_Ext)
 
     total_potential = np.array(total_potential)
     
-    with open('supplied_data_walls_potential_r_space.txt', 'w') as f:
-        for pos, v in zip(positions, v_Ext):
-            pos_str = ' '.join(map(str, pos))
-            f.write(f"{pos_str} {v}\n")
+    
+            
+    for key in v_ext_species:
+        with open(f"supplied_data_walls_potential_{key}_r_space.txt", "w") as f:
+            for pos, v in zip(positions, v_ext_species[key]):
+                pos_str = ' '.join(map(str, pos))
+                f.write(f"{pos_str} {v}\n")
 
     print("\n\n... external potential due to wall particles have been exported successfully ...\n\n\n")
 
@@ -708,13 +713,6 @@ def wall_potential_values_visualization():
     # For simplicity, use the magnitude of positions
     positions_magnitude = np.linalg.norm(positions, axis=1)
 
-    plt.figure(figsize=(12, 8), dpi=300)
-    plt.plot(positions_magnitude, v_Ext, marker='o', linestyle='-', color='b')
-    plt.xlabel('Position Magnitude')
-    plt.ylabel('Potential (v_Ext)')
-    plt.title('Position vs Potential')
-    plt.grid(True)
-    plt.savefig('vis_walls_position_vs_potential.png')
     
     
     
@@ -726,17 +724,18 @@ def wall_potential_values_visualization():
     plt.figure(figsize=(12, 8), dpi=300)  # High-definition plot
 
     # Loop through each potential profile
-    for i, v_Ext in enumerate(total_potential):
+    for i , key in enumerate(v_ext_species):
         # Cycle through line styles and colors
         style = line_styles[i % len(line_styles)]
         color = colors[i % len(colors)]
-        plt.plot(positions_magnitude, v_Ext, marker='o', linestyle=style, color=color, label=f'Profile {i+1}')
+        plt.plot(positions_magnitude, v_ext_species[key], marker='o', linestyle=style, color=color, label=f'Profile {key} and wall')
 
     # Plot customization
     plt.xlabel('Position Magnitude')
     plt.ylabel('Potential (v_Ext)')
     plt.title('Position vs Potential for Multiple Profiles')
     plt.grid(True)
+    plt.ylim(-10, 10)
     plt.legend()
 
     # Save the plot in high resolution

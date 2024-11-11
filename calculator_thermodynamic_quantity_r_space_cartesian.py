@@ -5,14 +5,14 @@
 
 
 
-def thermodynamic_variables()
+def thermodynamic_variables():
 
     import numpy as np
     from scipy.optimize import minimize
 
     # Constants and Parameters
     T = 300  # Temperature in K
-    Pressure = 0.04   # Pressure in bar
+    Pressure = 1   # Pressure in bar
     Sigma_ff = 3.305  # Lennard-Jones sigma [Å]
     distance_unit=Sigma_ff
     Eps_kb = 118.05   # Lennard-Jones epsilon/k_B [K]
@@ -72,7 +72,7 @@ def thermodynamic_variables()
 
 
         
-    pressure_range = np.linspace(0.0001, 10.0, 100000)  # 100 points between 0.1 atm and 10 atm
+    pressure_range = np.linspace(0.01, 10.0, 1000)  # 100 points between 0.1 atm and 10 atm
 
     # Open a text file to write the results
     with open('eos_rho_vs_pressure.txt', 'w') as file:
@@ -99,7 +99,7 @@ def thermodynamic_variables()
             eta = np.pi * rho_H * Sigma_ff**3 / 6.0
             
             # Write the pressure and corresponding bulk density to the file
-            file.write(f"{eta:>30.12f}  {P_star:>20.6f}\n")
+            file.write(f"{eta:>30.12f}  {P:>20.6f}\n")
 
     print("EOS data written to 'eos_rho_vs_pressure.txt'")
 
@@ -139,3 +139,4 @@ def thermodynamic_variables()
     print(f"Total Chemical Potential (mu_H): {mu_H}")
 
     return 0; 
+thermodynamic_variables()

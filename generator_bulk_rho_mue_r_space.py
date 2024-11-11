@@ -22,7 +22,7 @@ def bulk_rho_mue_r_space():
     with open(json_file_simulation_thermodynamics, "r") as file:
         data_thermodynamic = json.load(file)
     total_rho = data_thermodynamic["simulation_thermodynamic_parameters"]["rho"]
-
+    temperature =  data_thermodynamic["simulation_thermodynamic_parameters"]["temperature"]
 
 
     # Load interaction properties
@@ -37,7 +37,7 @@ def bulk_rho_mue_r_space():
     # Define interaction potential based on data
     def interaction_potential(r, epsilon, sigma, interaction_type):
         """Calculate the potential based on interaction type."""
-        if interaction_type == "lj":
+        if interaction_type == "wca":
             # Standard Lennard-Jones potential with cutoff at 5 * sigma
             if r < 2**(1/6) * sigma:
                 return -epsilon
@@ -47,7 +47,7 @@ def bulk_rho_mue_r_space():
                 return 0
                 
                 
-        elif interaction_type == "wca":
+        elif interaction_type == "wca_1":
             # Weeks-Chandler-Andersen potential, truncated and shifted Lennard-Jones
             if r < 2**(1/6) * sigma:
                 return 4 * epsilon * ((sigma / r)**12 - (sigma / r)**6) + epsilon
@@ -68,7 +68,7 @@ def bulk_rho_mue_r_space():
         
         elif interaction_type == "hc":
             # Hard-core repulsive potential
-            return 200000 if r < sigma else 0
+            return 0
             
         elif "custom" in interaction_type:
             dummy_string="pair_potential_integrant_"+interaction_type
@@ -103,6 +103,8 @@ def bulk_rho_mue_r_space():
     
     y1=0
     y2=0
+    y3=0
+    y0=1 
     eta=0
     total_rho=0
     hc_sigma={}
@@ -139,6 +141,7 @@ def bulk_rho_mue_r_space():
                 try:
                     y1 += rho_other*sigma_ij
                     y2 += rho_other*sigma_ij*sigma_ij
+                    y3 += rho_other*sigma_ij*sigma_ij*sigma_ij
                     total_rho += rho_other
                     eta += (1/6.0)*rho_other*np.pi*sigma_ij**3.0 
                     hc_sigma[species_type] = sigma_ij
@@ -148,7 +151,7 @@ def bulk_rho_mue_r_space():
                 continue  # Skip integration for hard-core interactions
 
             # Set the lower limit of integration based on interaction type
-            r_min = sigma_ij if interaction_type in ["lj", "wca", "yk"] else 0
+            r_min = sigma_ij if interaction_type in ["lj", "yk"] else 0
             
             integral_result, _ = quad(interaction_potential, r_min, cutoff, args=(epsilon, sigma_ij, interaction_type))
             mue_total += rho_other * integral_result
@@ -188,6 +191,7 @@ def bulk_rho_mue_r_space():
                 try:
                     y1 += rho_other*sigma_ij
                     y2 += rho_other*sigma_ij*sigma_ij
+                    y3 += rho_other*sigma_ij*sigma_ij*sigma_ij
                     total_rho += rho_other
                     eta += (1/6.0)*rho_other*np.pi*sigma_ij**3.0 
                     hc_sigma[species_type] = sigma_ij
@@ -196,7 +200,7 @@ def bulk_rho_mue_r_space():
                 continue  # Skip integration for hard-core interactions
 
             # Set the lower limit of integration based on interaction type
-            r_min = sigma_ij if interaction_type in ["lj", "wca", "yk"] else 0
+            r_min = sigma_ij if interaction_type in ["lj", "yk"] else 0
 
             # Integrate the potential from r_min to cutoff
             integral_result, _ = quad(interaction_potential, r_min, cutoff, args=(epsilon, sigma_ij, interaction_type))
@@ -237,6 +241,7 @@ def bulk_rho_mue_r_space():
                 try:
                     y1 += rho_other*sigma_ij
                     y2 += rho_other*sigma_ij*sigma_ij
+                    y3 += rho_other*sigma_ij*sigma_ij*sigma_ij
                     total_rho += rho_other
                     eta += (1/6.0)*rho_other*np.pi*sigma_ij**3.0 
                     hc_sigma[species_type] = sigma_ij
@@ -245,7 +250,7 @@ def bulk_rho_mue_r_space():
                 continue  # Skip integration for hard-core interactions
 
             # Set the lower limit of integration based on interaction type
-            r_min = sigma_ij if interaction_type in ["lj", "wca", "yk"] else 0
+            r_min = sigma_ij if interaction_type in ["lj", "yk"] else 0
 
             # Integrate the potential from r_min to cutoff
             integral_result, _ = quad(interaction_potential, r_min, cutoff, args=(epsilon, sigma_ij, interaction_type))
@@ -258,20 +263,31 @@ def bulk_rho_mue_r_space():
                 print(f"Error integrating potential for {species_type}-{other_species}: {e}")
                 continue
             '''
-
         
+        #print("mue before ideal", mue_total/temperature)
         # Store the total chemical potential for the species
-        bulk_mue[species_type] = mue_total
+        bulk_mue[species_type] = mue_total/temperature + np.log(species[species_type])
+        #print ("mue ideal", np.log(species[species_type]))
     try:
         y1=y1/total_rho
         y2=y2/total_rho
+        y3=y3/total_rho
         print ("... there are additive hard cores specified in the system and the bulk Carnahan-Sterling approximation have been done ...\n\n")
     except Exception as e:
         print(f"\n")
             
     for key, value in hc_sigma.items():
         sigma = float(hc_sigma[key])
-        bulk_mue[key] = float(bulk_mue[key]) + np.log(eta / (1 - eta)) + ((sigma / y1) * (3 * eta / (1 - eta) + 3 * eta**2 / (1 - eta)**2)) + (sigma**2 / y2) * (9 * eta**2 / (2 * (1 - eta)**2)) - eta / (1 - eta)
+        #print(sigma, "and ", bulk_mue[key])
+        #hard_core =    ((sigma / y1) * (3 * eta / (1 - eta) + 3 * eta**2 / (1 - eta)**2)) + (sigma**2 / y2) * (9 * eta**2 / (2 * (1 - eta)**2)) - eta / (1 - eta)
+        
+        #hard_core = (6 * eta / (np.pi * y3)) * ((y0 * y2) / y3 + (y2**3) / y3**2 + (y0**2) / (3 * y3) )
+        
+        hard_core = eta* (8 - 9 * eta + 3 * eta**2) / (1 - eta)**3
+        
+        bulk_mue[key] += hard_core
+        #print("hard_core values are given by:", hard_core)
+        #print ("total_values are given as :", key, bulk_mue[key])
         
     # Load r-space data
     r_space_data = np.loadtxt(r_space_file)

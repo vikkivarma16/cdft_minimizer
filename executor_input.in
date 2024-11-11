@@ -9,9 +9,9 @@ space_confinement = abox
  
 # other options are like: abox, pcylinder, acylinder, asphere which is for the purpose of the aperiodic wall etc...
 
-box_extension = 20, 10, 10
+box_extension = 10, 5, 5
 
-box_points = 100, 100, 100
+box_points = 1000, 100, 100
 
 
 
@@ -22,7 +22,7 @@ aperiodicity_blocker: wall
 # here you can also define "na", "NA" or "none"
 
 wall: particles = b
-wall: position  = (0, 0, 0), (20, 0, 0) 
+wall: position  = (0, 0, 0), (10, 0, 0) 
 wall: orientation  = (1, 0, 0), (1, 0, 0)
 
 
@@ -47,16 +47,16 @@ species_fraction = 1.0
 
 # primary interactions
 
-interaction: aa = hc,  sigma = 1.2, cutoff = 3.2, epsilon=2
+interaction: aa = hc,  sigma = 1.0, cutoff = 3.2, epsilon=1
 
-wall_interaction: ab = gs,  sigma = 1.2, cutoff = 3.2, epsilon=2.0 
+wall_interaction: ab = custom_3,  sigma = 0.9333, cutoff = 3.2, epsilon=9 
 
 # b is the wall particle 
 
 
 #secondary interactions
 
-interaction: aa = wca,  sigma = 1.2, cutoff = 3.2, epsilon=3.0
+interaction: aa = wca,  sigma = 1.02, cutoff = 3.2, epsilon=1.0
 
 
 
@@ -64,11 +64,12 @@ interaction: aa = wca,  sigma = 1.2, cutoff = 3.2, epsilon=3.0
 # thermodynamic properties
 
 
-temperature = 300 
+temperature = 3 
 
-# in kelvin
+# in kbT/eps
 
-rho = 0.5
+
+rho = 0.3
 
 # in the reduced unit
 

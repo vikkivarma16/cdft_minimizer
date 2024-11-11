@@ -51,7 +51,7 @@ def calculate_particle_sizes(closest_distances, particle_types):
         # this section can handle the different interactions imposed on the same kind of the particles ...
         for pair_type, sigma in closest_distances.items():
             if interaction_key == pair_type:
-                particle_sizes[particle_type] = closest_distances[interaction_key] / 2
+                particle_sizes[particle_type] = closest_distances[interaction_key]
             
     return particle_sizes
 
@@ -67,14 +67,15 @@ def calculate_weight_function_k_space(particle_sizes, k_space, dimension):
                 weight_vector = [kx, ky, kz]
                 
                 
-                k_value = np.sqrt(kx**2.0 + ky**2.0 + kz**2.0)
+                k_value = kx
                 
+                #print("size is given by : ",size)
                 if k_value < EPSILON:
                     weight_vector.extend([
                         1,                       # Weight function at k=0
                         size * 0.5,              # Additional weight terms
-                        PI * size**2 * 0.25,
-                        PI * 0.125 * size**3,
+                        PI * size**2 ,
+                        PI * size**3 / 6.0 ,
                         0,                  # n1_x
                         0                  # n2_x
                     ])
@@ -83,13 +84,10 @@ def calculate_weight_function_k_space(particle_sizes, k_space, dimension):
                         np.sin(k_value * PI * size) / (k_value * size * PI),
                         np.sin(k_value * PI * size) / (2.0 * k_value * PI),
                         size * np.sin(k_value * PI * size) / k_value,
-                        (np.sin(k_value * PI * size) / (2.0 * k_value**3 * PI**2) - 
-                         size * np.cos(k_value * PI * size) / (2.0 * k_value**2 * PI)),
-                        (k_value * PI * size * np.cos(k_value * PI * size) - 
-                         np.sin(k_value * PI * size)) / (2.0 * size * PI**2 * k_value**2),
+                        (np.sin(k_value * PI * size) / (2.0 * k_value**3 * PI**2) - size * np.cos(k_value * PI * size) / (2.0 * k_value**2 * PI)),
+                        (k_value * PI * size * np.cos(k_value * PI * size) - np.sin(k_value * PI * size)) / (2.0 * size * PI**2 * k_value**2),
                                               # n1_y, n1_z
-                        (k_value * PI * size * np.cos(k_value * PI * size) - 
-                         np.sin(k_value * PI * size)) / (k_value**2 * PI)                       # n2_y, n2_z
+                        (k_value * PI * size * np.cos(k_value * PI * size) - np.sin(k_value * PI * size)) / (k_value**2 * PI)                       # n2_y, n2_z
                     ])
                 
                 weight_function.append(weight_vector)
@@ -124,6 +122,7 @@ def fmt_weights_1d():
     
     # Load k-space data from file
     k_space = np.loadtxt(k_space_file_path)
+    k_space = np.array(k_space)
     dimension = 1  # Set dimension for calculation
     
     # Calculate weight functions
