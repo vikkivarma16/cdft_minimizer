@@ -2,7 +2,7 @@ import numpy as np
 import json
 
 # Constants
-EPSILON = 1e-6  # Small value to avoid division by zero
+EPSILON = 0.0000001  # Small value to avoid division by zero
 PI = np.pi
 
 # Function to read particle interaction data from the JSON file
@@ -68,9 +68,9 @@ def calculate_weight_function_k_space(particle_sizes, k_space, dimension):
                 
                 
                 k_value = kx
-                
+                mod_k = np.sqrt(k_value*k_value)
                 #print("size is given by : ",size)
-                if k_value < EPSILON:
+                if mod_k < EPSILON:
                     weight_vector.extend([
                         1,                       # Weight function at k=0
                         size * 0.5,              # Additional weight terms
@@ -89,22 +89,42 @@ def calculate_weight_function_k_space(particle_sizes, k_space, dimension):
                                               # n1_y, n1_z
                         (k_value * PI * size * np.cos(k_value * PI * size) - np.sin(k_value * PI * size)) / (k_value**2 * PI)                       # n2_y, n2_z
                     ])
+                    
+                    
+               
                 
-                weight_function.append(weight_vector)
+                weight_function.append(np.array(weight_vector))
                 
                
                 
             weight_functions[particle_type] = np.array(weight_function)
-    
+            
+           
+            
+            
     return weight_functions
 
 # Function to export weight functions to files
+
 def export_weight_functions_to_files(weight_functions):
     for particle_type, weight_function in weight_functions.items():
         file_name = f"supplied_data_weight_FMT_k_space_{particle_type}.txt"
         np.savetxt(file_name, weight_function)
-        
-        
+
+     
+
+'''
+def export_weight_functions_to_files(weight_functions):
+    for particle_type, weight_function in weight_functions.items():
+        file_name = f"supplied_data_weight_FMT_k_space_{particle_type}.txt"
+        with open(file_name, 'w') as file:
+            for weight_vector in weight_function:
+                # Format each value to 8 decimal places and join with a tab
+                formatted_line = '\t'.join(f"{value:.8f}" for value in weight_vector)
+                file.write(formatted_line + '\n')  # Write each vector as a new line
+'''
+
+
         
 
 # Main function to execute the calculations

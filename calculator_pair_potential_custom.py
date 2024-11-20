@@ -47,7 +47,6 @@ def pair_potential_integrant_custom_1(r, v_r, epsilon, sigma):
     
     
     
-    
 def pair_potential_custom_2(r, v_r, epsilon, sigma):
 
     EPSILON = 0.0001
@@ -66,6 +65,9 @@ def pair_potential_custom_2(r, v_r, epsilon, sigma):
     v_r[r >= r_upper_bound] = 0  # Region 3: r > 5 * sigma
     
     return 0
+    
+    
+    
 '''
 import calculator_pair_potential_custom
 for i in range(1, 4):  # Adjust the range based on the number of functions
@@ -98,6 +100,7 @@ def pair_potential_integrant_custom_2(r, v_r, epsilon, sigma):
     
     return 0
     
+    
 
 def pair_potential_custom_3(r, v_r, epsilon, sigma):
 
@@ -112,11 +115,12 @@ def pair_potential_custom_3(r, v_r, epsilon, sigma):
     # Initialize the potential array
     
     # Calculate the WCA potential based on the distance
-    v_r[r <= EPSILON] = 2000000
+    v_r[r <= EPSILON] = 2000000000
     v_r[(r < r_upper_bound) & (r > EPSILON)] = epsilon * ((2.0/5.0)*(sigma / r[(r < r_upper_bound) & (r > EPSILON)])**10 -   (sigma / r[(r < r_upper_bound) & (r > EPSILON)])**4)  # Region 2: 2^(1/6) * sigma < r < 5*sigma
     v_r[r >= r_upper_bound] = 0  # Region 3: r > 5 * sigma
     
     return 0
+    
     
     
 def pair_potential_integrant_custom_3(r, v_r, epsilon, sigma):
@@ -137,7 +141,7 @@ def pair_potential_integrant_custom_3(r, v_r, epsilon, sigma):
     elif (r >= r_upper_bound):
         v_r = 0  # Region 3: r > 5 * sigma
     if (r<EPSILON):
-        v_r = 200000
+        v_r = 20000000
     
     return 0    
 

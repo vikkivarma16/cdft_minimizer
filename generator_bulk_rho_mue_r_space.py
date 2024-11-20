@@ -284,8 +284,18 @@ def bulk_rho_mue_r_space():
         #hard_core = (6 * eta / (np.pi * y3)) * ((y0 * y2) / y3 + (y2**3) / y3**2 + (y0**2) / (3 * y3) )
         
         hard_core = eta* (8 - 9 * eta + 3 * eta**2) / (1 - eta)**3
+        #hard_core = 0.0
+        
+        print ("the hard core contribution is give as: ", hard_core)
+        
+        print("the ideal contribution is given as: ", np.log(species[key]), "and before hard core the values are given as ", bulk_mue[key])
+        
         
         bulk_mue[key] += hard_core
+        
+        
+        #bulk_mue[key] = np.log(species[key])
+        
         #print("hard_core values are given by:", hard_core)
         #print ("total_values are given as :", key, bulk_mue[key])
         

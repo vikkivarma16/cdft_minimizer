@@ -735,7 +735,7 @@ def wall_potential_values_visualization():
     plt.ylabel('Potential (v_Ext)')
     plt.title('Position vs Potential for Multiple Profiles')
     plt.grid(True)
-    plt.ylim(-10, 10)
+    plt.ylim(-6, 10)
     plt.legend()
 
     # Save the plot in high resolution

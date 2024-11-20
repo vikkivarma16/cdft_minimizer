@@ -314,13 +314,6 @@ for key, rho in species.items():
 
 
 
-
-
-print("\n\n...hi here is the problem:",  np.fft.fftfreq(nx, x[1]-x[0]) )
-
-print ("\n\n... supplied data has been imported successfully ...\n\n\n")
-
-
 v_ext={}
 for key in species:
     with open(f"supplied_data_walls_potential_{key}_r_space.txt", "r") as file:
@@ -334,11 +327,16 @@ for key in species:
             v_ind.append( float(columns[3]))
         v_ext[key] = np.array(v_ind)
         
+print ("\n\n... supplied data has been imported successfully ...\n\n\n")
+
+
+
+
+
+
+
 
 # this is the main regions for the calculation for the 1 d walls confinement DFT simulation ...
-
-nufft = NUFFT()
-
 
 i = 0
 j = 0
@@ -350,7 +348,7 @@ rho_r_current = np.array(rho_r)
 piee = np.pi
 
 threshold = 0.001
-alpha = 0.1
+alpha = 0.3
 while (iteration < iteration_max):
     
     rho_r_initial = rho_r_current 
@@ -419,11 +417,12 @@ while (iteration < iteration_max):
     
                 
                 rho_alpha_r[particle1] = np.array(rho_alpha_r_ind)
-                
-               
-            
-                
-        pid = pid + 1         
+       
+        pid = pid + 1
+        
+        
+        
+        
     if (fmt_flag == 1):
         rho_alphas = []
         for j in range(6):
@@ -436,9 +435,12 @@ while (iteration < iteration_max):
             rho_alphas.append(li)
         rho_alpha=np.array(rho_alphas)
         
+    
+        # print("here is the 4th part ...", fmt_weights[particle1][:, 4], "\n\nhere is the 5th part ...",  fmt_weights[particle1][:, 5], "and the corresponding rho alpha 4 ...", rho_alpha[4, :] )
         
         
-        print("rho_alpha", rho_alpha)
+    
+        
         
         dphi=np.zeros((6, nx))
         
@@ -575,26 +577,44 @@ while (iteration < iteration_max):
                     
                     dphi_dalpha_r_ind.append(dphi_rho_alpha)
                 
+                dphi_dalpha_r_ind = np.array(dphi_dalpha_r_ind)
+                df_ext_ind = np.zeros(nx)
+                
                 
                 for i in range(nx):
-                    sum_alpha = 0
-                    for j in range(6):
-                        sum_alpha += dphi_dalpha_r_ind[j][i]
-                    df_ext_ind[i] += sum_alpha     
+                    df_ext_ind[i] = np.sum(dphi_dalpha_r_ind[:, i])
+                    
             elif interaction_types[interaction_level] in ["wca", "gs"] :
                 print("... it can be implemented easily however had not been done yet ...\n\n")
                 
                 
-        print("\n\n\n\n\n here is the",  df_ext_ind, "which ends here")        
+        
                 
         df_external[particle1] = np.array(df_ext_ind)
         df_ext_ind = np.array(df_ext_ind)
         
         
+        print (df_ext_ind)
         
         
         for i in range(nx):
-            rho_r_current[pid][i] = alpha * (np.exp( -np.real(df_ext_ind[i]) + mue_r[pid][i] - v_ext[particle1][i] )) + (1-alpha) * rho_r_initial[pid][i]
+            
+            
+            '''
+            if df_ext_ind[i] < -1000.0:
+                density = 0.0
+            else :
+                density = (np.exp( -np.real(df_ext_ind[i]) + mue_r[pid][i] - v_ext[particle1][i] ))
+            ''' 
+                
+            density = (np.exp( - v_ext[particle1][i]/ temperature)  * np.exp(mue_r[pid][i]) * np.exp( -df_ext_ind[i]) )
+            
+            print("please notice the difference:", mue_r[pid][i]- df_ext_ind[i])
+            
+            rho_r_current[pid][i] = alpha * density + (1-alpha) * rho_r_initial[pid][i]
+        
+        #print("hey can you please notice the something about this given density values:    \n\n",rho_r_current[pid], "\n\n .. here the density calculation ends ...\n")
+        
         
         diff = 0.0
         for i in range(nx):
@@ -632,6 +652,7 @@ for i, key in enumerate(species):
     style = line_styles[i % len(line_styles)]
     color = colors[i % len(colors)]
     plt.plot(x, rho_r_current[i], marker='o', linestyle=style, color=color, label=f'Species {key}')
+    #plt.ylim(0, 0.004)
 
 # Plot customization
 plt.xlabel('Position Magnitude')
