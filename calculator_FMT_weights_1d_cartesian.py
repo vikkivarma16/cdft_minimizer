@@ -63,6 +63,9 @@ def calculate_weight_function_k_space(particle_sizes, k_space, dimension):
         for particle_type, size in particle_sizes.items():
             weight_function = []
             
+            
+            print(size)
+            
             for kx, ky, kz in k_space:
                 weight_vector = [kx, ky, kz]
                 
@@ -85,9 +88,9 @@ def calculate_weight_function_k_space(particle_sizes, k_space, dimension):
                         np.sin(k_value * PI * size) / (2.0 * k_value * PI),
                         size * np.sin(k_value * PI * size) / k_value,
                         (np.sin(k_value * PI * size) / (2.0 * k_value**3 * PI**2) - size * np.cos(k_value * PI * size) / (2.0 * k_value**2 * PI)),
-                        (k_value * PI * size * np.cos(k_value * PI * size) - np.sin(k_value * PI * size)) / (2.0 * size * PI**2 * k_value**2),
+                        1j*(k_value * PI * size * np.cos(k_value * PI * size) - np.sin(k_value * PI * size)) / (2.0 * size * PI**2 * k_value**2),
                                               # n1_y, n1_z
-                        (k_value * PI * size * np.cos(k_value * PI * size) - np.sin(k_value * PI * size)) / (k_value**2 * PI)                       # n2_y, n2_z
+                        1j*(k_value * PI * size * np.cos(k_value * PI * size) - np.sin(k_value * PI * size)) / (k_value**2 * PI)                       # n2_y, n2_z
                     ])
                     
                     

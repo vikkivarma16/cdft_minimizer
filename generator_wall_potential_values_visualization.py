@@ -659,8 +659,8 @@ def wall_potential_values_visualization():
                     interaction_model = value["type"]
                     V_r = calculate_interaction_potential(r_space, interaction_model, epsilon, sigma)
                     total_potential.append(V_r)
-                    v_Ext = v_Ext + V_r
-                    v_ext_cast = v_ext_cast + V_r
+                    v_Ext = v_Ext + V_r 
+                    v_ext_cast = v_ext_cast + V_r 
                     
                     
                 if name1 in walls_interactions["secondary"]:
@@ -693,11 +693,11 @@ def wall_potential_values_visualization():
                     V_r = calculate_interaction_potential(r_space, interaction_model, epsilon, sigma)
                     v_Ext = v_Ext + V_r
                     v_ext_cast = v_ext_cast + V_r
-        v_ext_species[specimen] = np.array(v_ext_cast)
+        v_ext_species[specimen] = np.array(v_ext_cast) # + 2*  np.log(1+r_space)
     
     total_potential.append(v_Ext)
 
-    total_potential = np.array(total_potential)
+    total_potential = np.array(total_potential) 
     
     
             

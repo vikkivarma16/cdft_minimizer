@@ -292,25 +292,36 @@ for key, rho in species.items():
 
             # Split the line into columns and convert them to floats
             columns = line.strip().split()
-            kx.append(float(columns[0]))
-            ky.append(float(columns[1]))
-            kz.append(float(columns[2]))
+           
             
             # Collect rho-related values for this species
             li = []
 
-            li.append(float(columns[3]) + 1j*0. )
-            li.append(float(columns[4]) + 1j*0. )
-            li.append(float(columns[5]) + 1j*0. )
-            li.append(float(columns[6]) + 1j*0. )
-            li.append(0. + 1j*float(columns[7]) )
-            li.append(0. + 1j*float(columns[8]) )
+            li.append(complex(columns[3]) )
+            li.append(complex(columns[4]) )
+            li.append(complex(columns[5]) )
+            li.append(complex(columns[6]) )
+            li.append(complex(columns[7]) )
+            li.append(complex(columns[8]) )
             
             fmt_weights_ind.append(li)
             
     
     fmt_weights_ind = np.array (fmt_weights_ind)
     fmt_weights[key] = fmt_weights_ind # Append the individual weights list to fmt_weights
+
+
+
+
+k_space_file_path = 'supplied_data_k_space.txt'
+k_space = np.loadtxt(k_space_file_path)
+k_space = np.array(k_space)
+
+kx = k_space[:,0]
+ky = k_space[:,1]
+kz = k_space[:,2]
+
+
 
 
 
@@ -347,8 +358,14 @@ rho_r_current = np.array(rho_r)
 
 piee = np.pi
 
+
+
+
 threshold = 0.001
-alpha = 0.3
+alpha = 0.2
+
+print("\n\n...number of iteration is given as:", iteration_max, "\n\n")
+
 while (iteration < iteration_max):
     
     rho_r_initial = rho_r_current 
@@ -410,6 +427,8 @@ while (iteration < iteration_max):
                 for i in range(6):
                     omega_rho_k[i,:] = fmt_weights[particle1][:, i] * rho_k_ind 
                 
+                    #print(fmt_weights[particle1][:, i])
+               
                 
                 rho_alpha_r_ind= np.zeros((6,nx))
                 for i in range(6):
@@ -417,6 +436,8 @@ while (iteration < iteration_max):
     
                 
                 rho_alpha_r[particle1] = np.array(rho_alpha_r_ind)
+                
+               
        
         pid = pid + 1
         
@@ -435,7 +456,8 @@ while (iteration < iteration_max):
             rho_alphas.append(li)
         rho_alpha=np.array(rho_alphas)
         
-    
+        
+       # print("\n\nthe value of density is given by: ", rho_alpha, "\n\n")
         # print("here is the 4th part ...", fmt_weights[particle1][:, 4], "\n\nhere is the 5th part ...",  fmt_weights[particle1][:, 5], "and the corresponding rho alpha 4 ...", rho_alpha[4, :] )
         
         
@@ -478,14 +500,19 @@ while (iteration < iteration_max):
                 
                 dphi[1, k] = rho_alpha[2, k] / temp
                 
-                dphi[2, k] = rho_alpha[1, k]/temp + (np.log(temp) / rho_alpha[3, k] +1.0 / (temp**2) )* (rho_alpha[2, k]**2 - rho_alpha[5, k]**2) / (12.0 * np.pi * rho_alpha[3, k])
+                dphi[2, k] = rho_alpha[1, k]/temp + (np.log(temp) / rho_alpha[3, k] + 1.0 / (temp**2) )* (rho_alpha[2, k]**2 - rho_alpha[5, k]**2) / (12.0 * np.pi * rho_alpha[3, k])
                 
                 dphi[3, k] = rho_alpha[0, k] / temp + (rho_alpha[1, k] * rho_alpha[2, k] - rho_alpha[4, k] * rho_alpha[5, k])/ temp**2.0 
                 
-                dphi[3, k] += (rho_alpha[2,k]**3.0 - 3*rho_alpha[2, k] *rho_alpha[5, k]* rho_alpha[5, k] ) * (rho_alpha[3,k]* (rho_alpha[3, k]**2.0 - 5.0* rho_alpha[3,k]+ 2) + 2.0* temp**3.0 * np.log(temp)) / (36.* np.pi * rho_alpha[3, k]**3.0 * temp**3.0 )
+                # Assuming temp = 1 - rho_alpha[3, k] has already been computed
+
+                dphi[3, k] = ( rho_alpha[0, k] / temp + (rho_alpha[1, k] * rho_alpha[2, k] - rho_alpha[4, k] * rho_alpha[5, k]) / temp**2
+                    - (np.log(temp) / (18.0 * np.pi * rho_alpha[3, k]**3) + 1.0 / (36.0 * np.pi * rho_alpha[3, k]**2 * temp) + (1.0 - 3.0 * rho_alpha[3, k]) / (36.0 * np.pi * rho_alpha[3, k]**2 * temp**3)) * (rho_alpha[2, k]**3 - 3.0 * rho_alpha[2, k] * rho_alpha[5, k]**2))
+
                 
                 dphi[4, k] = -rho_alpha[5, k] / temp 
-                dphi[5, k] = -rho_alpha[4, k] / temp - (np.log(temp) / rho_alpha[3, k] + 1.0 / (temp**2)) * rho_alpha[2, k] * rho_alpha[5, k] / (6.0 * np.pi * rho_alpha[3, k])
+                
+                dphi[5, k] = -rho_alpha[4, k] / temp - ((np.log(temp) / rho_alpha[3, k] + 1.0 / (temp**2)) * rho_alpha[2, k] * rho_alpha[5, k] / (6.0 * np.pi * rho_alpha[3, k]))
 
 
         
@@ -573,7 +600,7 @@ while (iteration < iteration_max):
                 
                 dphi_dalpha_r_ind=[]
                 for i in range(6):
-                    dphi_rho_alpha= np.real(np.fft.ifftn(omega_dphi_k[i, :]))
+                    dphi_rho_alpha= ifft(omega_dphi_k[i, :]).real
                     
                     dphi_dalpha_r_ind.append(dphi_rho_alpha)
                 
@@ -594,7 +621,7 @@ while (iteration < iteration_max):
         df_ext_ind = np.array(df_ext_ind)
         
         
-        print (df_ext_ind)
+      
         
         
         for i in range(nx):
@@ -607,11 +634,17 @@ while (iteration < iteration_max):
                 density = (np.exp( -np.real(df_ext_ind[i]) + mue_r[pid][i] - v_ext[particle1][i] ))
             ''' 
                 
-            density = (np.exp( - v_ext[particle1][i]/ temperature)  * np.exp(mue_r[pid][i]) * np.exp( -df_ext_ind[i]) )
+            density = (np.exp( - v_ext[particle1][i]/ temperature) * np.exp(mue_r[pid][i]) * np.exp( -df_ext_ind[i]) )
             
-            print("please notice the difference:", mue_r[pid][i]- df_ext_ind[i])
+            #print(density, mue_r[pid][i], df_ext_ind[i], (mue_r[pid][i]-df_ext_ind[i]), (np.log(density)))
             
             rho_r_current[pid][i] = alpha * density + (1-alpha) * rho_r_initial[pid][i]
+            
+            
+            
+            rho_r_initial[pid][i] = rho_r_current[pid][i]
+            
+            #print (np.exp( - v_ext[particle1][i]/ temperature))
         
         #print("hey can you please notice the something about this given density values:    \n\n",rho_r_current[pid], "\n\n .. here the density calculation ends ...\n")
         

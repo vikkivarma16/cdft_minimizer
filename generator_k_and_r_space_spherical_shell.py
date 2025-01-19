@@ -41,8 +41,12 @@ def r_k_space():
 
     def generate_k_space_1d(length_x, num_points_x):
         """Generates k-space for 1D Cartesian grid using fftfreq."""
+        
+        print("\n\n\n\n\nlength x", length_x, "\n\n\n\n\n")
+        
+        
         dkx = length_x / (int(num_points_x) - 1)
-        kx = np.fft.fftfreq(int(num_points_x), d=dkx) * 2 * np.pi
+        kx = np.fft.fftfreq(int(num_points_x), d=dkx)
         return kx, np.zeros_like(kx), np.zeros_like(kx)  # ky and kz are zeros
 
     def generate_k_space_2d(length_x, length_y, num_points_x, num_points_y):
@@ -50,8 +54,8 @@ def r_k_space():
         dkx = length_x / (int(num_points_x) - 1)
         dky = length_y / (int(num_points_y) - 1)
         
-        kx = np.fft.fftfreq(int(num_points_x), d=dkx) * 2 * np.pi
-        ky = np.fft.fftfreq(int(num_points_y), d=dky) * 2 * np.pi
+        kx = np.fft.fftfreq(int(num_points_x), d=dkx)
+        ky = np.fft.fftfreq(int(num_points_y), d=dky) 
         
         # Create grids for kx and ky and assign kz values to zero
         kx_grid, ky_grid = np.meshgrid(kx, ky)
@@ -65,9 +69,9 @@ def r_k_space():
         dky = length_y / (int(num_points_y) - 1)
         dkz = length_z / (int(num_points_z) - 1)
         
-        kx = np.fft.fftfreq(int(num_points_x), d=dkx) * 2 * np.pi
-        ky = np.fft.fftfreq(int(num_points_y), d=dky) * 2 * np.pi
-        kz = np.fft.fftfreq(int(num_points_z), d=dkz) * 2 * np.pi
+        kx = np.fft.fftfreq(int(num_points_x), d=dkx) 
+        ky = np.fft.fftfreq(int(num_points_y), d=dky) 
+        kz = np.fft.fftfreq(int(num_points_z), d=dkz) 
         
         kx_grid, ky_grid, kz_grid = np.meshgrid(kx, ky, kz)
         

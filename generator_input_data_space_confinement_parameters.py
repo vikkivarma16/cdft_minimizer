@@ -66,7 +66,7 @@ def data_exporter_space_confinement_parameters(input_file):
     space_properties["dimension"]=1
     space_properties["confinement"]="pbox"
    
-    box_properties["box_length"] = [10.0, 10.0, 10.0]
+    box_properties["box_length"] = [5.0, 5.0, 5.0]
     box_properties["box_points"] = [1000, 1000, 1000]
     
     

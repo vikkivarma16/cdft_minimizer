@@ -267,6 +267,9 @@ def bulk_rho_mue_r_space():
         #print("mue before ideal", mue_total/temperature)
         # Store the total chemical potential for the species
         bulk_mue[species_type] = mue_total/temperature + np.log(species[species_type])
+        
+        
+        
         #print ("mue ideal", np.log(species[species_type]))
     try:
         y1=y1/total_rho
